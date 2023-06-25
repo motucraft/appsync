@@ -1,3 +1,4 @@
+/// The AWS resources have been deleted, so this information is not usable for anything.
 const amplifyConfig = '''{
   "api": {
     "plugins": {
