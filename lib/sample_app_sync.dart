@@ -17,7 +17,7 @@ class SampleAppSync extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final messages = useState<List<String>>([]);
+    final messages = useState<List<Message>>([]);
 
     return Scaffold(
       appBar: AppBar(
@@ -27,31 +27,25 @@ class SampleAppSync extends HookWidget {
         child: Column(
           children: [
             Consumer(
-              builder: (BuildContext context, WidgetRef ref, Widget? child) {
-                final subscriptionAsyncValue = ref.watch(subscriptionProvider);
+              builder: (_, ref, __) {
+                ref.listen(subscriptionProvider, (_, next) {
+                  if (next is AsyncData && next.value != null && next.value!.data != null) {
+                    final decodedJson = json.decode(next.value!.data!);
+                    final message = Wrapper.fromJson(decodedJson).onCreateSample_appsync_subscription;
+                    messages.value = [...messages.value, message];
+                  }
+                });
 
-                if (subscriptionAsyncValue is AsyncError) {
-                  return Center(
-                      child: Text(subscriptionAsyncValue.error.toString()));
-                }
-
-                if (subscriptionAsyncValue is AsyncData &&
-                    subscriptionAsyncValue.value != null &&
-                    subscriptionAsyncValue.value!.data != null) {
-                  messages.value.add(subscriptionAsyncValue.value!.data!);
-                }
+                logger.info('messages=${messages.value}');
 
                 return ListView.builder(
                   shrinkWrap: true,
                   itemCount: messages.value.length,
                   itemBuilder: (BuildContext context, int index) {
-                    final decodedJson = json.decode(messages.value[index]);
-                    logger.info('decodedJson=$decodedJson');
-                    final message = Wrapper.fromJson(decodedJson)
-                        .onCreateSample_appsync_subscription;
-
+                    final message = messages.value[index];
                     return ListTile(
                       title: Text(message.message),
+                      subtitle: Text(message.id, style: const TextStyle(fontSize: 12)),
                     );
                   },
                 );

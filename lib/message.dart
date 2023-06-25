@@ -9,8 +9,7 @@ class Wrapper with _$Wrapper {
     required Message onCreateSample_appsync_subscription,
   }) = _Wrapper;
 
-  factory Wrapper.fromJson(Map<String, Object?> json) =>
-      _$WrapperFromJson(json);
+  factory Wrapper.fromJson(Map<String, Object?> json) => _$WrapperFromJson(json);
 }
 
 @freezed
@@ -20,6 +19,5 @@ class Message with _$Message {
     required String message,
   }) = _Message;
 
-  factory Message.fromJson(Map<String, Object?> json) =>
-      _$MessageFromJson(json);
+  factory Message.fromJson(Map<String, Object?> json) => _$MessageFromJson(json);
 }
